@@ -1,0 +1,128 @@
+% =============================================================
+% Priyanshu Prasad -- Resume (Single Page, Balanced Layout)
+% =============================================================
+
+\documentclass[a4paper,10pt]{article}
+
+% Encoding & fonts
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Page geometry
+\usepackage[margin=0.65in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{fontawesome5}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{setspace}
+\setstretch{1.03}
+\pagestyle{empty}
+
+% Lists
+\setlist[itemize]{topsep=2pt,itemsep=2pt,leftmargin=*}
+
+% Links
+\definecolor{linkblue}{RGB}{0,102,204}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=linkblue}
+
+% Sections
+\titlespacing*{\section}{0pt}{1ex}{1ex}
+\titleformat{\section}{\bfseries\large\uppercase}{}{0em}{}[\titlerule]
+
+\begin{document}
+
+%====================
+% Header (Centered)
+%====================
+\begin{center}
+    {\LARGE \textbf{Priyanshu Prasad}}\\[0.3em]
+    \faPhone\ +91-9307803617 \quad
+    \faEnvelope\ \href{mailto:prasadpriyanshu05@gmail.com}{prasadpriyanshu05@gmail.com} \\[0.2em]
+    \faLinkedin\ \href{https://www.linkedin.com/in/priyanshu-prasad-71b37030b/}{linkedin.com/in/priyanshu-prasad} \quad
+    \faGithub\ \href{https://github.com/Priyanshu-2005-18}{github.com/Priyanshu-2005-18} \quad
+    \faCode\ \href{https://leetcode.com/u/2005priyanshu/}{leetcode.com/u/2005priyanshu}
+\end{center}
+
+%====================
+% Education
+%====================
+\section*{Education}
+\textbf{Bangalore Institute of Technology, Bengaluru} \hfill \textit{2023--2027}\\
+B.E. in Computer Science \& Engineering | CGPA: \textbf{8.43/10}.\\
+Relevant Coursework: Data Structures, Algorithms, DBMS, Operating Systems
+
+\vspace{0.6em}
+\textbf{Air Force School Viman Nagar, Pune} \hfill \textit{2021--2023}\\
+Class XII (CBSE): \textbf{89.6\%}.
+
+\vspace{0.6em}
+\textbf{Air Force School Viman Nagar, Pune} \hfill \textit{2019--2021}\\
+Class X (CBSE): \textbf{96\%}.
+
+%====================
+% Projects
+%====================
+\section*{Projects}
+\textbf{BudgetBuddy – Personal Finance Tracker} \hfill \href{https://github.com/Priyanshu-2005-18/My-Project}{\faGithub}\\
+\textit{Full‑stack Developer (Team)} | Python, Streamlit, SQLite, Pandas\\
+BudgetBuddy is a full-featured expense tracking app that allows users to log personal expenditures, manage peer
+to-peer transactions, and visualize financial summaries. I worked on both the frontend interface and backend logic,
+ contributing features such as secure user authentication, password reset, real-time graphs, and CSV export. The
+ interface was designed for accessibility using custom Streamlit styling.
+
+\vspace{0.8em}
+\textbf{Bharatiya Antariksh Hackathon 2025 – Collaborative Space Mission Design Platform} \hfill \href{https://github.com/Priyanshu-2005-18/Bharatiya-Antariksh-Hackathon.git}{\faGithub}\\
+\textit{Frontend Developer | HTML, CSS, JavaScript}\\
+Built a cloud-based platform enabling ISRO and startups to collaboratively design, test, and validate satellite components. Developed drag-and-drop builder for subsystem-level simulation, payload configuration, and component testing. Focused on modular design reuse to reduce duplication of space-grade component development. Contributed to UI/UX and simulation logic integration.
+
+%====================
+% Technical Skills
+%====================
+\section*{Technical Skills}
+\textbf{Languages:} C, C++, Python\\
+\textbf{Web:} HTML, CSS, JavaScript\\
+\textbf{Tools:} Git, GitHub, Streamlit, Pandas, Matplotlib, Seaborn\\
+\textbf{Core CS:} Data Structures \& Algorithms (C++)\\
+\textbf{Soft:} Collaboration, Problem‑Solving, Time Management
+
+%====================
+% Licenses \& Certifications
+%====================
+\section*{Licenses \& Certifications}
+\textbf{Tata – GenAI Powered Data Analytics Job Simulation} \hfill \textit{Issued Jul 2025}\\
+Platform: Forage | Credential ID: wqBLGndin7gEcohh8\\
+\href{https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/ifobHAoMjQs9s6bKS/gMTdCXwDdLYoXZ3wG_ifobHAoMjQs9s6bKS_gKFm2pXrAipuZSjBn_1753108893270_completion_certificate.pdf}{\underline{Show Credential}}
+
+\vspace{0.6em}
+\textbf{Deloitte Australia – Data Analytics Job Simulation} \hfill \textit{Issued Jun 2025}\\
+Platform: Forage | Credential ID: ZuDcykkX26RozPYBN\\
+\href{https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/9PBTqmSxAf6zZTseP/io9DzWKe3PTsiS6GG_9PBTqmSxAf6zZTseP_gKFm2pXrAipuZSjBn_1749535910862_completion_certificate.pdf}{\underline{Show Credential}}
+
+%====================
+% Achievements
+%====================
+\section*{Achievements}
+\begin{itemize}
+  \item Solved \textbf{120+} problems on LeetCode.
+  \item Represented school in interschool basketball competitions.
+\end{itemize}
+%---------- EXTRACURRICULARS ----------
+\section{Extracurriculars}
+\begin{itemize}
+    \item Member of Sports Club, Bangalore Institute of Technology. 
+    \item Member of National Service Scheme (NSS), since 2023.
+\end{itemize}
+%====================
+% Activities \& Interests
+%====================
+\section*{Activities \& Interests}
+\begin{itemize}
+  \item Team Sports: Basketball, Cricket.
+  \item Strategy Games: Chess (recreational).
+  \item Fitness: Daily gym routine; mental wellness.
+\end{itemize}
+
+\end{document}
