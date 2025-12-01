@@ -9,8 +9,7 @@ const Navigation = () => {
   const navLinks = [
     { to: '/', label: 'Home' },
     { to: '/hr-dashboard', label: 'HR Dashboard' },
-    { to: '/student-tools', label: 'Student Tools' },
-    { to: '/voice-assistant', label: '🎤 Voice Assistant' }
+    { to: '/student-tools', label: 'Student Tools' }
   ];
 
   return (

@@ -111,21 +111,4 @@ class StudentCareerProfile(BaseModel):
 class ResumeEvaluationRequest(BaseModel):
     resume_id: int
     job_title: Optional[str] = None
-
-# Voice Schemas
-class VoiceTranscriptionRequest(BaseModel):
-    audio_file: bytes
-    language: str = "en-US"
-
-class VoiceTranscriptionResponse(BaseModel):
-    transcribed_text: str
-    confidence: float
-
-class TextToSpeechRequest(BaseModel):
-    text: str
-    language: str = "en-US"
-    voice_gender: str = "female"
-
-class TextToSpeechResponse(BaseModel):
-    audio_file: bytes
     content_type: str

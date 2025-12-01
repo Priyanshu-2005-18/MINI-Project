@@ -38,14 +38,13 @@ from app.models import models  # Import models to register them
 Base.metadata.create_all(bind=engine)
 
 # Import routes
-from app.routes import resume_routes, job_routes, analysis_routes, voice_routes, student_routes
+from app.routes import resume_routes, job_routes, analysis_routes, student_routes
 from app.services import ats_screening
 
 # Include routers
 app.include_router(resume_routes.router, prefix="/api/resumes", tags=["Resumes"])
 app.include_router(job_routes.router, prefix="/api/jobs", tags=["Jobs"])
 app.include_router(analysis_routes.router, prefix="/api/analysis", tags=["Analysis"])
-app.include_router(voice_routes.router, prefix="/api/voice", tags=["Voice"])
 app.include_router(student_routes.router, prefix="/api/students", tags=["Student Tools"])
 app.include_router(ats_screening.router, tags=["ATS Screening"])
 

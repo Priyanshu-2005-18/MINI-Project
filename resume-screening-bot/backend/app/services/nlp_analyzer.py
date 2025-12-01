@@ -1,6 +1,6 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
+# from sentence_transformers import SentenceTransformer  # Removed to avoid torch dependency
 import numpy as np
 from typing import Dict, List, Tuple
 
@@ -8,15 +8,18 @@ class NLPAnalyzer:
     """NLP analysis engine for resume-job matching"""
     
     def __init__(self):
-        # Initialize Sentence-BERT for semantic embeddings
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        # Initialize TF-IDF for text similarity (simpler alternative to Sentence-BERT)
+        # self.model = SentenceTransformer('all-MiniLM-L6-v2')  # Removed to avoid torch dependency
         self.tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
     
     def compute_semantic_similarity(self, text1: str, text2: str) -> float:
-        """Compute semantic similarity between two texts using Sentence-BERT"""
-        embeddings = self.model.encode([text1, text2])
-        similarity = cosine_similarity([embeddings[0]], [embeddings[1]])[0][0]
-        return float(similarity)
+        """Compute TF-IDF based similarity between two texts"""
+        try:
+            tfidf_matrix = self.tfidf_vectorizer.fit_transform([text1, text2])
+            similarity = cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
+            return float(similarity)
+        except:
+            return 0.0  # Return 0 if similarity computation fails
     
     def compute_tfidf_similarity(self, text1: str, text2: str) -> float:
         """Compute TF-IDF based similarity"""

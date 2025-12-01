@@ -6,7 +6,6 @@ import Navigation from './Navigation';
 import Home from './pages/Home';
 import HRDashboard from './pages/HRDashboard';
 import StudentCareerTools from './pages/StudentCareerTools';
-import VoiceAssistant from './pages/VoiceAssistant';
 import './App.css';
 
 function App() {
@@ -19,7 +18,6 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/hr-dashboard" element={<HRDashboard />} />
             <Route path="/student-tools" element={<StudentCareerTools />} />
-            <Route path="/voice-assistant" element={<VoiceAssistant />} />
           </Routes>
         </main>
       </div>
