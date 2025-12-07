@@ -45,8 +45,11 @@ const HRDashboard = () => {
   };
 
   const handleAnalyze = async () => {
-    if (selectedResumes.length === 0) {
-      toast.warning('Select resumes to analyze');
+    // Use all resumes if none selected, otherwise use selected
+    const resumesToAnalyze = selectedResumes.length > 0 ? selectedResumes : allResumes.map(r => r.id);
+    
+    if (resumesToAnalyze.length === 0) {
+      toast.warning('Upload resumes first to analyze');
       return;
     }
 
@@ -67,9 +70,9 @@ const HRDashboard = () => {
       
       const jobId = jobResponse.data.id;
 
-      // Analyze each selected resume against the job
+      // Analyze each resume against the job
       const results = [];
-      for (const resumeId of selectedResumes) {
+      for (const resumeId of resumesToAnalyze) {
         try {
           const response = await analysisService.analyzeResumeJob(resumeId, jobId);
           results.push(response.data);
@@ -80,7 +83,7 @@ const HRDashboard = () => {
       
       setAnalysisResults({
         job_title: jobTitle,
-        total_resumes: selectedResumes.length,
+        total_resumes: resumesToAnalyze.length,
         analyses: results
       });
       
@@ -115,23 +118,11 @@ const HRDashboard = () => {
             <div className="bg-white p-6 rounded-lg shadow mt-6">
               <h2 className="text-xl font-semibold mb-4">
                 <FaFileUpload className="inline mr-2" />
-                Select Resumes ({allResumes.length})
+                Uploaded Resumes ({allResumes.length})
               </h2>
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {allResumes.map((resume) => (
-                  <label key={resume.id} className="flex items-center p-3 border rounded hover:bg-gray-50 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedResumes.includes(resume.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedResumes([...selectedResumes, resume.id]);
-                        } else {
-                          setSelectedResumes(selectedResumes.filter(id => id !== resume.id));
-                        }
-                      }}
-                      className="mr-3 w-4 h-4"
-                    />
+                  <div key={resume.id} className="flex items-center p-3 border rounded bg-gray-50">
                     <div className="flex-1">
                       <p className="font-semibold">{resume.filename}</p>
                       <p className="text-sm text-gray-500">ID: {resume.id}</p>
@@ -139,10 +130,10 @@ const HRDashboard = () => {
                     <p className="text-sm text-blue-600 font-semibold">
                       ATS: {resume.ats_score ? resume.ats_score.toFixed(1) : 'N/A'}
                     </p>
-                  </label>
+                  </div>
                 ))}
               </div>
-              <p className="text-sm text-gray-600 mt-3">Selected: {selectedResumes.length}</p>
+              <p className="text-sm text-gray-600 mt-3">Ready to analyze: All {allResumes.length} resumes</p>
             </div>
           )}
         </div>
@@ -164,11 +155,11 @@ const HRDashboard = () => {
           />
           <button
             onClick={handleAnalyze}
-            disabled={loading || selectedResumes.length === 0}
+            disabled={loading || allResumes.length === 0}
             className="w-full mt-4 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white py-2 rounded flex items-center justify-center gap-2"
           >
             {loading && <FaSpinner className="animate-spin" />}
-            {loading ? 'Analyzing...' : 'Analyze Resumes'}
+            {loading ? 'Analyzing...' : `Analyze All Resumes (${allResumes.length})`}
           </button>
         </div>
       </div>
