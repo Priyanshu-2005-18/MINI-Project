@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { resumeService, analysisService, jobService } from '../services/api';
 import ResumeUpload from '../components/ResumeUpload';
-import AnalysisResults from '../components/AnalysisResults';
 import { toast } from 'react-toastify';
 import { FaSpinner, FaFileUpload } from 'react-icons/fa';
 
 const HRDashboard = () => {
   const [resumes, setResumes] = useState([]);
   const [uploadedResumes, setUploadedResumes] = useState([]);
-  const [selectedResumes, setSelectedResumes] = useState([]);
   const [analysisResults, setAnalysisResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [jobDescription, setJobDescription] = useState('');
@@ -45,8 +43,8 @@ const HRDashboard = () => {
   };
 
   const handleAnalyze = async () => {
-    // Use all resumes if none selected, otherwise use selected
-    const resumesToAnalyze = selectedResumes.length > 0 ? selectedResumes : allResumes.map(r => r.id);
+    // Automatically analyze all uploaded resumes
+    const resumesToAnalyze = allResumes.map(r => r.id);
     
     if (resumesToAnalyze.length === 0) {
       toast.warning('Upload resumes first to analyze');
