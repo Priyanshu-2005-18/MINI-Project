@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { resumeService, analysisService, jobService } from '../services/api';
+import React, { useState } from 'react';
+import { analysisService, jobService } from '../services/api';
 import ResumeUpload from '../components/ResumeUpload';
 import { toast } from 'react-toastify';
-import { FaSpinner, FaFileUpload } from 'react-icons/fa';
+import { FaSpinner } from 'react-icons/fa';
 
 const HRDashboard = () => {
   const [uploadedResumes, setUploadedResumes] = useState([]);
