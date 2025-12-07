@@ -5,28 +5,12 @@ import { toast } from 'react-toastify';
 import { FaSpinner, FaFileUpload } from 'react-icons/fa';
 
 const HRDashboard = () => {
-  const [resumes, setResumes] = useState([]);
   const [uploadedResumes, setUploadedResumes] = useState([]);
   const [analysisResults, setAnalysisResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [jobDescription, setJobDescription] = useState('');
   const [jobTitle, setJobTitle] = useState('');
   const userId = 1; // Should come from auth context
-
-  useEffect(() => {
-    fetchResumes();
-  }, []);
-
-  const fetchResumes = async () => {
-    try {
-      const response = await resumeService.getUserResumes(userId);
-      console.log('Fetched resumes:', response.data);
-      setResumes(response.data || []);
-    } catch (error) {
-      console.error('Failed to load resumes:', error);
-      toast.error('Failed to load resumes');
-    }
-  };
 
   const handleUploadSuccess = (data) => {
     console.log('Upload success, data:', data);
@@ -36,15 +20,11 @@ const HRDashboard = () => {
     } else {
       setUploadedResumes([...uploadedResumes, data]);
     }
-    // Refetch from database
-    setTimeout(() => {
-      fetchResumes();
-    }, 1000);
   };
 
   const handleAnalyze = async () => {
-    // Automatically analyze all uploaded resumes
-    const resumesToAnalyze = allResumes.map(r => r.id);
+    // Analyze only newly uploaded resumes
+    const resumesToAnalyze = uploadedResumes.map(r => r.id);
     
     if (resumesToAnalyze.length === 0) {
       toast.warning('Upload resumes first to analyze');
@@ -79,6 +59,13 @@ const HRDashboard = () => {
         }
       }
       
+      // Sort results by match score in descending order (highest to lowest)
+      results.sort((a, b) => {
+        const scoreA = a.match_score || a.overall_score || 0;
+        const scoreB = b.match_score || b.overall_score || 0;
+        return scoreB - scoreA;
+      });
+      
       setAnalysisResults({
         job_title: jobTitle,
         total_resumes: resumesToAnalyze.length,
@@ -94,13 +81,6 @@ const HRDashboard = () => {
     }
   };
 
-  const allResumes = [...resumes, ...uploadedResumes].reduce((unique, item) => {
-    if (!unique.find(r => r.id === item.id)) {
-      unique.push(item);
-    }
-    return unique;
-  }, []);
-
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">HR Dashboard</h1>
@@ -111,29 +91,6 @@ const HRDashboard = () => {
             <h2 className="text-xl font-semibold mb-4">Upload Resumes</h2>
             <ResumeUpload userId={userId} onUploadSuccess={handleUploadSuccess} />
           </div>
-
-          {allResumes.length > 0 && (
-            <div className="bg-white p-6 rounded-lg shadow mt-6">
-              <h2 className="text-xl font-semibold mb-4">
-                <FaFileUpload className="inline mr-2" />
-                Uploaded Resumes ({allResumes.length})
-              </h2>
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {allResumes.map((resume) => (
-                  <div key={resume.id} className="flex items-center p-3 border rounded bg-gray-50">
-                    <div className="flex-1">
-                      <p className="font-semibold">{resume.filename}</p>
-                      <p className="text-sm text-gray-500">ID: {resume.id}</p>
-                    </div>
-                    <p className="text-sm text-blue-600 font-semibold">
-                      ATS: {resume.ats_score ? resume.ats_score.toFixed(1) : 'N/A'}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-gray-600 mt-3">Ready to analyze: All {allResumes.length} resumes</p>
-            </div>
-          )}
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow">
@@ -153,11 +110,11 @@ const HRDashboard = () => {
           />
           <button
             onClick={handleAnalyze}
-            disabled={loading || allResumes.length === 0}
+            disabled={loading || uploadedResumes.length === 0}
             className="w-full mt-4 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white py-2 rounded flex items-center justify-center gap-2"
           >
             {loading && <FaSpinner className="animate-spin" />}
-            {loading ? 'Analyzing...' : `Analyze All Resumes (${allResumes.length})`}
+            {loading ? 'Analyzing...' : `Analyze Uploaded Resumes (${uploadedResumes.length})`}
           </button>
         </div>
       </div>
