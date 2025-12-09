@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { analysisService, jobService } from '../services/api';
+import { analysisService, jobService, resumeService } from '../services/api';
 import ResumeUpload from '../components/ResumeUpload';
+import ResumeList from '../components/ResumeList';
 import { toast } from 'react-toastify';
 import { FaSpinner } from 'react-icons/fa';
 
@@ -14,16 +15,26 @@ const HRDashboard = () => {
 
   const handleUploadSuccess = (data) => {
     console.log('Upload success, data:', data);
-    // Add uploaded resumes to the list
+    // Auto-add uploaded resumes to the list
     if (Array.isArray(data)) {
       setUploadedResumes([...uploadedResumes, ...data]);
     } else {
       setUploadedResumes([...uploadedResumes, data]);
     }
+    toast.success('Resume(s) added to queue for analysis');
+  };
+
+  const handleDeleteResume = async (resumeId) => {
+    try {
+      await resumeService.deleteResume(resumeId);
+      setUploadedResumes(uploadedResumes.filter(r => r.id !== resumeId));
+      toast.success('Resume deleted');
+    } catch (error) {
+      toast.error('Failed to delete resume');
+    }
   };
 
   const handleAnalyze = async () => {
-    // Analyze only newly uploaded resumes
     const resumesToAnalyze = uploadedResumes.map(r => r.id);
     
     if (resumesToAnalyze.length === 0) {
@@ -59,8 +70,13 @@ const HRDashboard = () => {
         }
       }
       
-      // Sort results by match score in descending order (highest to lowest)
+      // Sort results by ATS score first, then match score in descending order (highest to lowest)
       results.sort((a, b) => {
+        const atsA = a.ats_score || 0;
+        const atsB = b.ats_score || 0;
+        if (atsA !== atsB) {
+          return atsB - atsA;
+        }
         const scoreA = a.match_score || a.overall_score || 0;
         const scoreB = b.match_score || b.overall_score || 0;
         return scoreB - scoreA;
@@ -72,7 +88,7 @@ const HRDashboard = () => {
         analyses: results
       });
       
-      toast.success('Analysis complete!');
+      toast.success('Analysis complete! Results are sorted by score.');
     } catch (error) {
       console.error('Analysis error:', error);
       toast.error('Analysis failed: ' + (error.response?.data?.detail || error.message));
@@ -83,47 +99,64 @@ const HRDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">HR Dashboard</h1>
+      <h1 className="text-3xl font-bold">HR Dashboard - Resume Analysis</h1>
 
-      <div>
-        <div className="lg:col-span-2">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4">Upload Resumes</h2>
-            <ResumeUpload userId={userId} onUploadSuccess={handleUploadSuccess} />
-          </div>
-        </div>
+      {/* Upload Section */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h2 className="text-xl font-semibold mb-4">📤 Step 1: Upload Resumes</h2>
+        <ResumeUpload userId={userId} onUploadSuccess={handleUploadSuccess} />
+      </div>
 
+      {/* Resume List & Preview */}
+      {uploadedResumes.length > 0 && (
         <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Job Details</h2>
+          <h2 className="text-xl font-semibold mb-4">📋 Step 2: Review Uploaded Resumes</h2>
+          <ResumeList 
+            resumes={uploadedResumes}
+            analysisResults={analysisResults}
+            onDeleteResume={handleDeleteResume}
+            isLoading={loading}
+          />
+        </div>
+      )}
+
+      {/* Job Details Section */}
+      {uploadedResumes.length > 0 && (
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl font-semibold mb-4">📝 Step 3: Enter Job Description</h2>
           <input
             type="text"
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
-            placeholder="Job Title (e.g., Software Engineer)"
-            className="w-full p-3 border rounded mb-3"
+            placeholder="Job Title (e.g., Senior Software Engineer)"
+            className="w-full p-3 border border-gray-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <textarea
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste job description here..."
-            className="w-full h-40 p-3 border rounded resize-none"
+            className="w-full h-40 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleAnalyze}
-            disabled={loading || uploadedResumes.length === 0}
-            className="w-full mt-4 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white py-2 rounded flex items-center justify-center gap-2"
+            disabled={loading || uploadedResumes.length === 0 || !jobDescription}
+            className="w-full mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-lg flex items-center justify-center gap-2 font-semibold transition-all"
           >
             {loading && <FaSpinner className="animate-spin" />}
-            {loading ? 'Analyzing...' : `Analyze Uploaded Resumes (${uploadedResumes.length})`}
+            {loading ? 'Analyzing Resumes...' : `🚀 Analyze All Resumes (${uploadedResumes.length})`}
           </button>
+          {!jobDescription && uploadedResumes.length > 0 && (
+            <p className="text-sm text-yellow-600 mt-2">💡 Enter job description to begin analysis</p>
+          )}
         </div>
-      </div>
+      )}
 
+      {/* Analysis Results */}
       {analysisResults && (
         <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Analysis Results</h2>
+          <h2 className="text-xl font-semibold mb-4">✅ Step 4: Analysis Results (Auto-Sorted by Score)</h2>
           <p className="text-sm text-gray-600 mb-4">
-            Job: {analysisResults.job_title} | Total Resumes: {analysisResults.total_resumes}
+            <strong>Job:</strong> {analysisResults.job_title} | <strong>Total Resumes:</strong> {analysisResults.total_resumes}
           </p>
           <div className="space-y-4">
             {analysisResults.analyses?.map((result, idx) => {
@@ -347,64 +380,6 @@ const HRDashboard = () => {
                     style={{ width: `${matchScore}%` }}
                   />
                 </div>
-                
-                <div className="w-full bg-gray-300 rounded-full h-3 mb-4">
-                  <div
-                    className={`h-3 rounded-full transition-all ${
-                      result.overall_score >= 80 ? "bg-green-500" :
-                      result.overall_score >= 60 ? "bg-blue-500" :
-                      result.overall_score >= 40 ? "bg-yellow-500" : "bg-red-500"
-                    }`}
-                    style={{ width: `${result.overall_score}%` }}
-                  />
-                </div>
-
-                {/* Detailed Breakdown (Collapsible) */}
-                {result.detailed_breakdown && (
-                  <details className="mt-3">
-                    <summary className="cursor-pointer text-sm font-semibold text-gray-700 hover:text-blue-600">
-                      View Detailed Breakdown
-                    </summary>
-                    <div className="grid grid-cols-2 gap-3 mt-3 text-xs">
-                      <div className="bg-white p-2 rounded border">
-                        <p className="text-gray-600">Skill Match</p>
-                        <p className="font-bold text-blue-600">
-                          {result.detailed_breakdown.skill_match?.match_percentage?.toFixed(0) || 
-                           result.detailed_breakdown.skill_match?.score?.toFixed(0) || 0}%
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {result.detailed_breakdown.skill_match?.matched_required_count || 0}/
-                          {result.detailed_breakdown.skill_match?.jd_skills_count || 0} skills
-                        </p>
-                      </div>
-                      <div className="bg-white p-2 rounded border">
-                        <p className="text-gray-600">Keyword Similarity</p>
-                        <p className="font-bold text-purple-600">
-                          {result.keyword_similarity?.combined_score?.toFixed(0) || 0}%
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          TF-IDF: {result.keyword_similarity?.tfidf_score?.toFixed(0) || 0}% | 
-                          Semantic: {result.keyword_similarity?.semantic_score?.toFixed(0) || 0}%
-                        </p>
-                      </div>
-                      <div className="bg-white p-2 rounded border">
-                        <p className="text-gray-600">Experience</p>
-                        <p className="font-bold text-indigo-600">
-                          {result.experience_score?.toFixed(0) || result.detailed_breakdown.experience_alignment?.score?.toFixed(0) || 0}%
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {result.detailed_breakdown.experience_alignment?.years_estimated?.toFixed(1) || 0} years
-                        </p>
-                      </div>
-                      <div className="bg-white p-2 rounded border">
-                        <p className="text-gray-600">Education Fit</p>
-                        <p className="font-bold text-teal-600">
-                          {result.education_score?.toFixed(0) || result.detailed_breakdown.education_fit?.score?.toFixed(0) || 0}%
-                        </p>
-                      </div>
-                    </div>
-                  </details>
-                )}
 
                 {/* Matched Skills */}
                 {result.matched_skills && result.matched_skills.length > 0 && (
