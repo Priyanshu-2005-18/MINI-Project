@@ -23,19 +23,37 @@ const ResumeList = ({
         ...resume,
         atsScore: analysis?.ats_score || 0,
         matchScore: analysis?.match_score || analysis?.overall_score || 0,
+        resumeStrength: analysis?.resume_strength_10 || analysis?.resume_strength || 0,
+        experienceScore: analysis?.experience_score || 0,
         category: analysis?.category || 'Not Analyzed',
         analysisId: analysis?.id,
       };
     });
 
-    // Sort based on current sort preference
+    // Smart sorting based on current sort preference
+    // For 'ats' and 'match' modes, use intelligent multi-criteria sorting
     if (sortBy === 'ats') {
-      merged.sort((a, b) => (b.atsScore || 0) - (a.atsScore || 0));
+      merged.sort((a, b) => {
+        // Primary: ATS Score
+        if (Math.abs((b.atsScore || 0) - (a.atsScore || 0)) > 5) {
+          return (b.atsScore || 0) - (a.atsScore || 0);
+        }
+        // Secondary: Match Score
+        return (b.matchScore || 0) - (a.matchScore || 0);
+      });
     } else if (sortBy === 'match') {
-      merged.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+      merged.sort((a, b) => {
+        // Primary: Match Score
+        if (Math.abs((b.matchScore || 0) - (a.matchScore || 0)) > 3) {
+          return (b.matchScore || 0) - (a.matchScore || 0);
+        }
+        // Secondary: Resume Strength
+        return (b.resumeStrength || 0) - (a.resumeStrength || 0);
+      });
     } else if (sortBy === 'name') {
       merged.sort((a, b) => a.filename.localeCompare(b.filename));
     } else {
+      // Upload order
       merged.sort((a, b) => (b.id || 0) - (a.id || 0));
     }
 
@@ -119,7 +137,7 @@ const ResumeList = ({
 
         {/* Resume List */}
         <div className="space-y-3 max-h-[600px] overflow-y-auto">
-          {sortedResumes.map((resume) => (
+          {sortedResumes.map((resume, index) => (
             <div
               key={resume.id}
               className={`p-4 border-2 rounded-lg cursor-pointer transition-all hover:shadow-md ${
@@ -130,51 +148,71 @@ const ResumeList = ({
               onClick={() => handleViewResume(resume)}
             >
               <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0">
-                  {/* File Name */}
-                  <p className="font-semibold text-gray-900 truncate text-base">
-                    {resume.filename}
-                  </p>
+                {/* Rank Badge */}
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-sm ${
+                    index === 0 ? 'bg-green-500' :
+                    index === 1 ? 'bg-blue-500' :
+                    index === 2 ? 'bg-purple-500' :
+                    'bg-gray-400'
+                  }`}>
+                    {index + 1}
+                  </div>
                   
-                  {/* Resume ID */}
-                  <p className="text-xs text-gray-500 mt-1">
-                    ID: {resume.id}
-                  </p>
+                  <div className="flex-1 min-w-0">
+                    {/* File Name */}
+                    <p className="font-semibold text-gray-900 truncate text-base">
+                      {resume.filename}
+                    </p>
+                    
+                    {/* Resume ID */}
+                    <p className="text-xs text-gray-500 mt-1">
+                      ID: {resume.id}
+                    </p>
 
-                  {/* Category Badge */}
-                  {resume.category && resume.category !== 'Not Analyzed' && (
-                    <div className="mt-2">
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${getCategoryColor(
-                          resume.category
-                        )}`}
-                      >
-                        {resume.category}
-                      </span>
-                    </div>
-                  )}
+                    {/* Category Badge */}
+                    {resume.category && resume.category !== 'Not Analyzed' && (
+                      <div className="mt-2">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${getCategoryColor(
+                            resume.category
+                          )}`}
+                        >
+                          {resume.category}
+                        </span>
+                      </div>
+                    )}
 
-                  {/* Scores Row */}
-                  {(resume.atsScore > 0 || resume.matchScore > 0) && (
-                    <div className="flex gap-4 mt-2 text-sm">
-                      {resume.atsScore > 0 && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-gray-600">ATS:</span>
-                          <span className={`font-bold ${getScoreColor(resume.atsScore)}`}>
-                            {resume.atsScore.toFixed(1)}
-                          </span>
-                        </div>
-                      )}
-                      {resume.matchScore > 0 && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-gray-600">Match:</span>
-                          <span className={`font-bold ${getScoreColor(resume.matchScore)}`}>
-                            {resume.matchScore.toFixed(1)}%
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                    {/* Scores Row */}
+                    {(resume.atsScore > 0 || resume.matchScore > 0) && (
+                      <div className="flex gap-4 mt-2 text-sm">
+                        {resume.atsScore > 0 && (
+                          <div className="flex items-center gap-1">
+                            <span className="text-gray-600">ATS:</span>
+                            <span className={`font-bold ${getScoreColor(resume.atsScore)}`}>
+                              {resume.atsScore.toFixed(1)}
+                            </span>
+                          </div>
+                        )}
+                        {resume.matchScore > 0 && (
+                          <div className="flex items-center gap-1">
+                            <span className="text-gray-600">Match:</span>
+                            <span className={`font-bold ${getScoreColor(resume.matchScore)}`}>
+                              {resume.matchScore.toFixed(1)}%
+                            </span>
+                          </div>
+                        )}
+                        {resume.resumeStrength > 0 && (
+                          <div className="flex items-center gap-1">
+                            <span className="text-gray-600">Strength:</span>
+                            <span className="font-bold text-indigo-600">
+                              {resume.resumeStrength.toFixed(1)}/10
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Action Buttons */}
