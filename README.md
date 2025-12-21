@@ -2,7 +2,8 @@
 ### AI-Powered Resume Analysis & Career Development Platform
 
 <p align="center">
-  <img src="assets/banner.png" alt="Resume Screening Bot Banner" width="90%">
+  <img src="<img width="1359" height="870" alt="Screenshot 2025-12-12 025652" src="https://github.com/user-attachments/assets/5ac2c0ca-8511-449a-adb1-d8fbc82416dc" />
+" alt="Resume Screening Bot Banner" width="90%">
 </p>
 
 An end-to-end **AI-driven resume screening and career guidance platform** built for **HR teams, recruiters, and students**.  
