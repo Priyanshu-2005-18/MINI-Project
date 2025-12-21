@@ -15,22 +15,24 @@ It leverages **Natural Language Processing (NLP)**, **Machine Learning**, and **
 
 ### 🏠 Landing Page
 <p align="center">
-  <img src="assets/home.png" width="85%">
+  <img width="1275" height="581" alt="Screenshot 2025-12-12 025852" src="https://github.com/user-attachments/assets/f1d7ee62-9ba6-4502-82be-2bece3e6495b" />
 </p>
 
 ### 📄 Resume Upload & Management
 <p align="center">
-  <img src="assets/resume-upload.png" width="85%">
+<img width="1165" height="456" alt="Screenshot 2025-12-12 030022" src="https://github.com/user-attachments/assets/f28c87ab-c5d9-4577-8193-c8b105eaccd3" />
+
 </p>
 
 ### 📊 Resume Analysis & Ranking
 <p align="center">
-  <img src="assets/analysis.png" width="85%">
+ <img width="775" height="712" alt="Screenshot 2025-12-12 031033" src="https://github.com/user-attachments/assets/ab0b5207-a689-40f3-bc50-5ae3927e7c73" />
 </p>
 
 ### 🎓 Career Roadmap & Skill Gap Analysis
 <p align="center">
-  <img src="assets/career-roadmap.png" width="85%">
+ <img width="773" height="576" alt="Screenshot 2025-12-12 031543" src="https://github.com/user-attachments/assets/737ad613-ea67-483a-914f-afe7cd71f661" />
+
 </p>
 
 ---
