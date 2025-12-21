@@ -21,7 +21,6 @@ It leverages **Natural Language Processing (NLP)**, **Machine Learning**, and **
 ### 📄 Resume Upload & Management
 <p align="center">
 <img width="1165" height="456" alt="Screenshot 2025-12-12 030022" src="https://github.com/user-attachments/assets/f28c87ab-c5d9-4577-8193-c8b105eaccd3" />
-
 </p>
 
 ### 📊 Resume Analysis & Ranking
