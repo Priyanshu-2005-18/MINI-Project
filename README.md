@@ -95,7 +95,7 @@ Final Score =
 (Experience × 25%) +
 (Keywords × 20%) +
 (Projects × 10%)
-📁 Project Structure
+## 📁 Project Structure
 resume-screening-bot/
 ├── backend/
 │   ├── app/
@@ -121,13 +121,14 @@ resume-screening-bot/
 ├── assets/               # Images & screenshots
 ├── README.md
 └── .gitignore
-⚡ Installation & Quick Start
+##⚡ Installation & Quick Start
 Prerequisites
 Python 3.9+
 Node.js 14+
 Git
 PostgreSQL (optional)
-🔧 Backend Setup
+
+## 🔧 Backend Setup
 cd backend
 python -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
@@ -136,14 +137,14 @@ python -m spacy download en_core_web_sm
 uvicorn app.main:app --reload
 Backend URL: http://localhost:8000
 API Docs: http://localhost:8000/docs
-🎨 Frontend Setup
+## 🎨 Frontend Setup
 cd frontend
 npm install
 npm run build
 node server.js
 node server.js
 Frontend URL: http://localhost:3001
-📡 API Endpoints
+## 📡 API Endpoints
 Resume Management
 
 POST /api/resumes/upload
@@ -178,7 +179,7 @@ POST /api/students/skill-gap-analysis
 
 POST /api/students/career-path
 
-📊 Performance Metrics
+## 📊 Performance Metrics
 
 Resume analysis time: 2–5 seconds
 
@@ -188,13 +189,13 @@ Bulk processing: 100+ resumes
 
 API response time: <200ms
 
-🔐 Environment Variables
+## 🔐 Environment Variables
 Backend (.env)
 DATABASE_URL=postgresql://user:password@localhost/resume_db
 SECRET_KEY=your-secret-key
 Frontend (.env)
 REACT_APP_API_URL=http://localhost:8000
-🛠 Future Enhancements
+## 🛠 Future Enhancements
 
 Multi-language resume support
 
@@ -208,7 +209,7 @@ Mobile applications (Android / iOS)
 
 Real-time analytics dashboard
 
-🤝 Contributing
+## 🤝 Contributing
 
 Fork the repository
 
@@ -220,11 +221,11 @@ Push to the branch
 
 Open a Pull Request
 
-📜 License
+## 📜 License
 
 MIT License
 
-👨‍💻 Author
+## 👨‍💻 Author
 
 Priyanshu
 GitHub: @Priyanshu-2005-18
